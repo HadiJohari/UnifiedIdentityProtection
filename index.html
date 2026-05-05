@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UIP - Unified Identity Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* CSS CORE STYLES */
+    :root {
+      --bg-color: #0b0e17;
+      --accent-color: #D9A93B;
+      --card-bg: #161b22;
+      --text-main: #ffffff;
+      --text-dim: #8b949e;
+      /* Fluid Spacing & Sizes */
+      --header-height: clamp(80px, 10vh, 118px);
+      --section-padding: clamp(80px, 12vw, 150px);
+      --header-padding: clamp(50px, 15vw, 400px);
+      --content-padding: clamp(80px, 22vw, 600px);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding-top: var(--header-height);
+    }
+
+    /* ANIMATION UTILITIES */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* SECTIONS */
+    header {
+      height: var(--header-height);
+      padding: 0 var(--header-padding);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-sizing: border-box;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo-img {
+      height: clamp(40px, 6vh, 65px);
+      width: auto;
+    }
+
+    .logo-text-wrapper {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .logo-text-main {
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #D9A93B;
+    }
+
+    .logo-text-sub {
+      font-size: clamp(0.7rem, 1vw, 0.9rem);
+      color: #D9A93B;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .social-section {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .social-link {
+      color: #D9A93B;
+      font-size: clamp(1.3rem, 1.8vw, 1.8rem);
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .social-link:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      height: calc(100vh - var(--header-height));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--content-padding);
+    }
+
+    .hero-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: clamp(20px, 5vw, 100px);
+    }
+
+    .hero-text {
+      flex: 1;
+      text-align: left;
+    }
+
+    .hero-visual {
+      flex: 1.2;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .hero-visual::after {
+      content: '';
+      position: absolute;
+      top: 45%;
+      left: 5%;
+      right: 5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(217, 169, 59, 0.4), transparent);
+      z-index: 10;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .hero-video {
+      width: 100%;
+      height: auto;
+      border-radius: 30px;
+      border: 2px solid rgba(217, 169, 59, 0.3);
+      box-shadow: 0 0 50px rgba(217, 169, 59, 0.1);
+      background: radial-gradient(circle at center, rgba(217, 169, 59, 0.05) 0%, transparent 80%);
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      margin-bottom: 20px;
+      line-height: 1.1;
+      color: #D9A93B;
+    }
+
+    .hero p {
+      color: var(--text-dim);
+      max-width: 500px;
+      font-size: clamp(1rem, 1.2vw, 1.3rem);
+      margin-bottom: 30px;
+    }
+
+    .btn-primary {
+      background-color: #D9A93B;
+      color: #000;
+      padding: 15px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+    }
+
+    /* TEXT ONLY SECTION */
+    .text-only-section {
+      padding: var(--section-padding) var(--content-padding);
+      text-align: center;
+    }
+
+    .text-only-section h2 {
+      color: #D9A93B;
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 40px;
+    }
+
+    .text-only-section p {
+      color: var(--text-dim);
+      font-size: clamp(1.1rem, 1.3vw, 1.4rem);
+      max-width: 900px;
+      margin: 0 auto 30px;
+      line-height: 1.8;
+    }
+
+    /* FEATURE PANELS (Alternating) */
+    .panel-section {
+      padding: var(--section-padding) clamp(20px, 8vw, 150px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .panel-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1600px;
+      gap: clamp(40px, 6vw, 100px);
+      padding: clamp(30px, 5vw, 60px);
+      border: 2px solid rgba(217, 169, 59, 0.3);
+      border-radius: 40px;
+      background: radial-gradient(circle at center, rgba(217, 169, 59, 0.03) 0%, transparent 70%);
+      box-shadow: 0 0 50px rgba(217, 169, 59, 0.05);
+      position: relative;
+    }
+
+    .panel-visual {
+      flex: 1.5;
+      display: flex;
+      justify-content: center;
+    }
+
+    .panel-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 20px;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+    }
+
+    .panel-text {
+      flex: 1;
+      text-align: left;
+    }
+
+    .panel-text h2 {
+      color: #D9A93B;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      margin-bottom: 20px;
+    }
+
+    .panel-text p {
+      color: var(--text-dim);
+      font-size: clamp(1rem, 1.1vw, 1.2rem);
+      line-height: 1.8;
+    }
+
+    .panel-text ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .panel-text li {
+      margin-bottom: 12px;
+      padding-left: 25px;
+      position: relative;
+      color: var(--text-dim);
+    }
+
+    .panel-text li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #D9A93B;
+    }
+
+    /* REVERSED PANEL */
+    .panel-reversed {
+      flex-direction: row-reverse;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 60px var(--content-padding);
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: #000;
+    }
+
+    footer p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    footer h3 {
+      color: #D9A93B;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 850px) {
+      :root {
+        --header-padding: 20px;
+        --content-padding: 20px;
+        --section-padding: 60px;
+      }
+
+      body {
+        padding-top: 100px;
+      }
+
+      header {
+        height: auto;
+        padding: 10px 15px;
+      }
+
+      .header-container {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .logo-section {
+        flex-direction: row;
+        gap: 12px;
+        text-align: left;
+      }
+
+      .logo-img {
+        height: 50px;
+      }
+
+      .logo-text-main {
+        font-size: 1.5rem;
+      }
+
+      .logo-text-sub {
+        font-size: 0.7rem;
+      }
+
+      .hero {
+        height: auto;
+        min-height: 80vh;
+        padding: 40px 20px;
+      }
+
+      .hero-container {
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      .hero-text {
+        text-align: center;
+        order: 1;
+      }
+
+      .hero-visual {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .panel-container {
+        flex-direction: column-reverse !important;
+        text-align: center;
+        gap: 30px;
+        padding: 30px 20px;
+      }
+
+      .panel-text {
+        text-align: center;
+      }
+
+      .panel-text li {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo-section">
+        <img src="MAIN-LOGO.png" alt="UIP Logo" class="logo-img">
+        <div class="logo-text-wrapper">
+          <span class="logo-text-main">UIP</span>
+          <span class="logo-text-sub">by Hadi Johari</span>
+        </div>
+      </a>
+
+      <div class="social-section">
+        <a href="mailto:example@gmail.com" target="_blank" class="social-link"><i class="fas fa-envelope"></i></a>
+        <a href="https://linkedin.com" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://youtube.com" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+        <a href="https://twitter.com" target="_blank" class="social-link"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://github.com" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-text">
+        <h1>Unified Identity Protection</h1>
+        <p>Stop Chasing Logs. Start Hardening Identity. Enforce real-time Zero Trust across your entire infrastructure.
+          👤🛡️</p>
+        <a href="#about-founder" class="btn-primary">Connect with Founder</a>
+      </div>
+      <div class="hero-visual">
+        <video autoplay muted loop playsinline class="hero-video">
+          <source src="WEBSITE-ANIMATION.webm" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. WHY UIP -->
+  <section class="text-only-section reveal">
+    <h2>Why UIP?</h2>
+    <p>
+      Credentials are the gold mine for modern attackers. High-privilege accounts like <strong>Domain Admins</strong>
+      and <strong>Service Accounts (Non-Human Identities - NHIs)</strong> are primary targets because they grant broad
+      access without triggering traditional malware defenses. Traditional tools focus on file behaviors or log
+      collection, often missing
+      these legitimate but compromised identity flows.
+    </p>
+    <p>
+      UIP acts as an <strong>Identity-Based Firewall</strong>, sitting between your identities and resources to enforce
+      Zero Trust in real-time. With <strong>Automated Incident Response</strong>, UIP can instantly quarantine affected
+      users or systems, neutralizing credential-based attacks (Pass-the-Hash, Token Theft, Session Hijacking) at the
+      source even if your passwords are leaked.
+    </p>
+    <p>
+      By stopping <strong>Lateral Movement</strong> and unauthorized <strong>privilege escalation</strong>
+      before they happen, UIP severs the primary spread path for ransomware. When an attacker
+      cannot pivot between systems, malware designed to encrypt or wipe files is pinned to a single machine, preventing
+      catastrophic network-wide propagation.
+    </p>
+  </section>
+
+  <!-- 2. ADVANCED DASHBOARD -->
+  <section class="panel-section reveal">
+    <div class="panel-container">
+      <div class="panel-visual">
+        <img src="Picture1.png" alt="Advanced Identity Dashboard" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Advanced Identity Dashboard</h2>
+        <p>Gain absolute visibility over your identity threat landscape. Monitor hardening status, detect identity-based
+          threats, and secure your entire domain environment with a single click through our centralized dashboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. UNIVERSAL MFA -->
+  <section class="panel-section reveal">
+    <div class="panel-container panel-reversed">
+      <div class="panel-visual">
+        <img src="Picture2.png" alt="Universal MFA Policies" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Universal MFA Policies</h2>
+        <p>Extend multi-factor authentication to every asset—even those that don't natively support it. UIP brings
+          everything under a single MFA umbrella without costly migrations:</p>
+        <ul>
+          <li>Legacy & Custom Applications</li>
+          <li>Web & SaaS Applications</li>
+          <li>Desktop Login (Windows, Linux, and Network Devices)</li>
+          <li>RDP, SSH, and Admin tools (CMD/PowerShell)</li>
+          <li>File Servers, Databases, and VPNs</li>
+          <li>SSO & PAM Integrations</li>
+          <li>Service Accounts & Non-Human Identities (NHI)</li>
+          <li>Real-time Push Notifications & SIEM integration</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. POLICY SETTINGS -->
+  <section class="panel-section reveal">
+    <div class="panel-container">
+      <div class="panel-visual">
+        <img src="Picture3.png" alt="Granular Policy Control" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Granular Policy Control</h2>
+        <p>Define sophisticated access rules with ease. Implement Allow/Deny/MFA policies based on user groups, domains,
+          or specific sources and destinations.</p>
+        <p>Enforce <strong>Just-in-Time (JIT) Administration</strong> to limit access windows and significantly shrink
+          your organizational attack surface.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. IDENTITY PROFILE -->
+  <section class="panel-section reveal">
+    <div class="panel-container panel-reversed">
+      <div class="panel-visual">
+        <img src="Picture4.jpg" alt="Identity Profiling" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Deep Identity Profiling</h2>
+        <p>Get a dedicated lens into every account's behavior. Track authentication flows, monitor for privilege
+          escalation attempts, and stop lateral movement in its tracks.</p>
+        <p>Security teams gain full visibility into in-network activities, allowing for immediate response to suspicious
+          access patterns.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel-section reveal">
+    <div class="panel-container">
+      <div class="panel-visual">
+        <img src="Picture5.png" alt="Identity Threat Detection & Response" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Identity Threat Detection & Response (ITDR)</h2>
+        <p>UIP combines risk-based policies with real-time response to neutralize threats as they evolve. By Using
+          <strong>Identity Threat Scoring(ITS)</strong> system and enforcing continuous validation, we drastically
+          shrink the
+          <strong>Blast
+            Radius</strong> of any infection.
+        </p>
+        <ul>
+          <li><strong>Automated Remediation</strong>: quarantines compromised accounts and resources; therefore, even if
+            an endpoint is infected, the ransomware propagation chain is halted at the very first step.</li>
+          <li><strong>ML-Driven Baseline</strong>: Establish behavioral baselines to identify subtle deviations and
+            attacker tactics.</li>
+          <li><strong>Proactive Defense</strong>: Advanced pattern recognition capabilities that can identify new and
+            evolving threat signatures without relying on traditional signature-based detection methods.
+            so it can identify the use of vulnerabilities before they are exploited.</li>
+          <li><strong>SOC Optimization</strong>: Eliminate the need for massive manual intervention or the friction of
+            managing multiple tools and the constant manual coordination required with administrators to execute a
+            response especially during critical infrastructure breaches.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DEPLOYMENT -->
+  <section class="text-only-section reveal">
+    <h2>Revolutionary Deployment</h2>
+    <p>
+      Traditional security changes—such as policy updates, access segmentation, and network reconfigurations—are often
+      time-consuming, complex, and prone to error. This friction disrupts both the user experience and administrative
+      workflows. As a result, teams often resist critical security upgrades out of fear of downtime or service
+      instability, leaving the organization trapped in an insecure status quo.
+    </p>
+    <p>
+      UIP is <strong>Agentless and Proxyless</strong>. Unlike traditional PAM or antivirus, you don't need to install
+      software on every server or disrupt your network with "man-in-the-middle" proxies that create bandwidth
+      bottlenecks.
+    </p>
+    <p>
+      It integrates seamlessly with your current IAM (on-prem or cloud), requiring <strong>Zero Configuration</strong>
+      changes to your network architecture and ensuring <strong>Zero Downtime</strong> during deployment.
+    </p>
+  </section>
+
+  <!-- 7. WHO AM I -->
+  <section id="about-founder" class="panel-section reveal">
+    <div class="panel-container">
+      <div class="panel-visual">
+        <img src="Picture6.png" alt="Hadi Johari - Founder" class="panel-img">
+      </div>
+      <div class="panel-text">
+        <h2>Meet the Founder: Hadi Johari</h2>
+        <p>I am a Cyber Security R&D researcher and Purple Team Engineer with deep expertise in Microsoft Active
+          Directory and defensive automation. My experience in identifying flaws in traditional security products led to
+          the creation of UIP—a revolutionary approach to identity protection.</p>
+        <p>I am now looking to bring this technical leadership to the <strong>European or Australian tech
+            ecosystems</strong>. I am seeking <strong>Skilled Worker Visa</strong> or <strong>Global Talent</strong>
+          opportunities to help forward-thinking teams build resilient, identity-centric security postures.</p>
+        <a href="mailto:example@gmail.com" class="btn-primary">Connect on LinkedIn & Watch Product Demos</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>Secure Every Identity</h3>
+    <p>Prevent • Detect • Respond</p>
+    <p>&copy; 2026 UIP by Hadi Johari. All Rights Reserved.</p>
+  </footer>
+
+  <!-- JS SCROLL SCRIPT -->
+  <script>
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 150;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal();
+  </script>
+</body>
+
+</html>
