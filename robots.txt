@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hadijohari.github.io/UnifiedIdentityProtection/sitemap.xml
